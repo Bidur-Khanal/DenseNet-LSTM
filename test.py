@@ -3,18 +3,10 @@ from keras.preprocessing.image import ImageDataGenerator
 from keras.callbacks import ModelCheckpoint
 import os
 from keras.models import *
-from keras.layers import *
-from keras.optimizers import *
-from keras.losses import *
 from keras import backend as keras
-from keras import backend as K
-from keras.utils import plot_model
 import pandas as pd
-from all_utils import get_data_generator
-from keras.callbacks import ModelCheckpoint, CSVLogger, LearningRateScheduler, ReduceLROnPlateau, EarlyStopping
 from keras import callbacks
-reduceLearningRate  = 0.5
-from model import DenseNet
+from LSTM import Densenet_LSTM
 import cv2
 import matplotlib.pyplot as plt
 from matplotlib import cm
@@ -33,8 +25,7 @@ if __name__ == "__main__":
     im = np.array(im) / 255.0
     im = np.expand_dims(im, axis=0)
     print(im.shape)
-    model = DenseNet(dense_blocks=5, dense_layers=-1, growth_rate=8, dropout_rate=0.2,
-                     bottleneck=True, compression=1.0, weight_decay=1e-4, depth=40,batch_norm= False)
+    model = Densenet_LSTM()
     model.load_weights("outputs/model-230.h5")
     
     
@@ -54,8 +45,4 @@ if __name__ == "__main__":
     for m in range(0, 8,2):
         cv2.circle(im, (int(lmarks[m]), int(lmarks[m + 1])), 5, (255, 255, 255), -1)
 
-    plt.figure(1, figsize=(25, 25))
-
-    plt.subplot(211)
-    plt.imshow(im, cmap=cm.gray)
-    plt.savefig('landmark.jpg')
+    cv2.imwrite('landmarks.png',im)
